@@ -13,11 +13,11 @@ interface Props {
 const TodoList: React.FC<Props> = ({ todos, setTodos, completedTodos, setCompletedTodos }) => {
   return (
     <div className="container">
-        <Droppable droppableId="TodoList">
+        <Droppable droppableId="TodosList">
             {
-                (provided) => (
+                (provided, snapshot) => (
                     <div 
-                        className="todos" 
+                        className={`todos ${snapshot.isDraggingOver ? 'dragactive': ''}`} 
                         ref={provided.innerRef} 
                         {...provided.droppableProps}
                     >
@@ -25,8 +25,9 @@ const TodoList: React.FC<Props> = ({ todos, setTodos, completedTodos, setComplet
                             Active Tasks
                         </span>
                         {
-                            todos.map(todo => (
+                            todos.map((todo, index) => (
                                 <SingleTodo 
+                                    index={index}
                                     todo={todo} 
                                     todos={todos} 
                                     key={todo.id} 
@@ -34,15 +35,16 @@ const TodoList: React.FC<Props> = ({ todos, setTodos, completedTodos, setComplet
                                 />
                             ) )
                         }
+                        {provided.placeholder}
                     </div>
                 )
             }
         </Droppable>
-        <Droppable droppableId='TodoRemove'>
+        <Droppable droppableId='TodosRemove'>
             {
-                (provided) => (
+                (provided, snapshot) => (
                     <div 
-                        className="todos remove"
+                    className={`todos remove ${snapshot.isDraggingOver ? 'dragcomplete': ''}`}
                         ref={provided.innerRef} 
                         {...provided.droppableProps}
                     >
@@ -50,16 +52,17 @@ const TodoList: React.FC<Props> = ({ todos, setTodos, completedTodos, setComplet
                         Completed Tasks
                     </span>
                     {
-                        completedTodos.map(todo => (
+                        completedTodos.map((todo, index) => (
                             <SingleTodo 
+                                index={index}
                                 todo={todo} 
-                                todos={todos} 
+                                todos={completedTodos} 
                                 key={todo.id} 
                                 setTodos={setCompletedTodos}
                             />
                         ) )
                         }
-
+                        {provided.placeholder}
                     </div> 
                 )
 
